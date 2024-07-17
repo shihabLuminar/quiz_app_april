@@ -11,6 +11,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int currentQstnIndex = 0;
+  int? selectedIndex;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -44,8 +45,26 @@ class _HomeScreenState extends State<HomeScreen> {
                 // options seciton
                 Column(
                   children: List.generate(
-                    5,
-                    (index) => optionsCard(),
+                    4,
+                    (index) {
+                      List ansOptions =
+                          DummyDb.question[currentQstnIndex]["options"] as List;
+                      return optionsCard(
+                        borderColor: getColor(index),
+                        onOpitonsTapped: () {
+                          selectedIndex = index;
+                          setState(() {});
+                          if (index ==
+                              DummyDb.question[currentQstnIndex]
+                                  ["answerIndex"]) {
+                            print("rignt answer");
+                          } else {
+                            print("wrong answer");
+                          }
+                        },
+                        option: ansOptions[index],
+                      );
+                    },
                   ),
                 ),
 
@@ -80,5 +99,13 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  Color getColor(int index) {
+    if (DummyDb.question[currentQstnIndex]["answerIndex"] == selectedIndex &&
+        index == selectedIndex) {
+      return Colors.green;
+    }
+    return Colors.grey.shade800;
   }
 }

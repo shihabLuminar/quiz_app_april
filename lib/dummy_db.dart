@@ -1,5 +1,5 @@
 class DummyDb {
-  static const question = [
+  static const List<Map<String, dynamic>> question = [
     {
       "question": "What is Flutter?",
       "options": [
