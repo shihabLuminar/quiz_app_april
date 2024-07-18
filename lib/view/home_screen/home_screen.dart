@@ -16,6 +16,21 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          actions: [
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.blue, borderRadius: BorderRadius.circular(10)),
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              child: Text(
+                "${currentQstnIndex + 1}/${DummyDb.question.length}",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+            ),
+            SizedBox(width: 20)
+          ],
+        ),
         backgroundColor: Colors.black,
         body: Center(
           child: Padding(
@@ -52,14 +67,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       return optionsCard(
                         borderColor: getColor(index),
                         onOpitonsTapped: () {
-                          selectedIndex = index;
-                          setState(() {});
-                          if (index ==
-                              DummyDb.question[currentQstnIndex]
-                                  ["answerIndex"]) {
-                            print("rignt answer");
-                          } else {
-                            print("wrong answer");
+                          if (selectedIndex == null) {
+                            selectedIndex = index;
+                            setState(() {});
+                            if (index ==
+                                DummyDb.question[currentQstnIndex]
+                                    ["answerIndex"]) {
+                              print("rignt answer");
+                            } else {
+                              print("wrong answer");
+                            }
                           }
                         },
                         option: ansOptions[index],
@@ -70,10 +87,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 InkWell(
                   onTap: () {
-                    if (currentQstnIndex < DummyDb.question.length - 1) {
-                      currentQstnIndex++;
-                      print(currentQstnIndex);
-                      setState(() {});
+                    if (selectedIndex != null) {
+                      if (currentQstnIndex < DummyDb.question.length - 1) {
+                        currentQstnIndex++;
+                        print(currentQstnIndex);
+                        setState(() {});
+                        selectedIndex = null;
+                      }
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Select a valid choice")));
                     }
                   },
                   child: Container(
@@ -102,10 +125,19 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Color getColor(int index) {
-    if (DummyDb.question[currentQstnIndex]["answerIndex"] == selectedIndex &&
-        index == selectedIndex) {
-      return Colors.green;
+    if (selectedIndex != null) {
+      if (DummyDb.question[currentQstnIndex]["answerIndex"] == selectedIndex &&
+          index == selectedIndex) {
+        return Colors.green;
+      } else if (DummyDb.question[currentQstnIndex]["answerIndex"] !=
+              selectedIndex &&
+          index == selectedIndex) {
+        return Colors.red;
+      } else if (DummyDb.question[currentQstnIndex]["answerIndex"] == index) {
+        return Colors.green;
+      }
     }
+
     return Colors.grey.shade800;
   }
 }
