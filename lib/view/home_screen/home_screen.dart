@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app_april/dummy_db.dart';
 import 'package:quiz_app_april/view/home_screen/widgets/options_card.dart';
+import 'package:quiz_app_april/view/result_screen/result_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -10,6 +11,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int rightAnswerCount = 0;
   int currentQstnIndex = 0;
   int? selectedIndex;
   @override
@@ -70,10 +72,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           if (selectedIndex == null) {
                             selectedIndex = index;
                             setState(() {});
-                            if (index ==
+                            if (selectedIndex ==
                                 DummyDb.question[currentQstnIndex]
                                     ["answerIndex"]) {
-                              print("rignt answer");
+                              rightAnswerCount++;
+                              print(rightAnswerCount);
                             } else {
                               print("wrong answer");
                             }
@@ -93,6 +96,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         print(currentQstnIndex);
                         setState(() {});
                         selectedIndex = null;
+                      } else {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ResultScreen(
+                                rightAnswerCount: rightAnswerCount,
+                              ),
+                            ));
                       }
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
